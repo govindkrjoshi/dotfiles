@@ -69,6 +69,7 @@ set number
 set omnifunc=syntaxcomplete#Complete " Omni completion
 set confirm
 set cmdheight=1
+set autochdir
 
 let mapleader=","
 let maplocalleader="\\"
