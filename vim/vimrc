@@ -13,7 +13,7 @@ Plugin 'guns/vim-sexp'
 Plugin 'tpope/vim-sexp-mappings-for-regular-people'
 
 " Haskell
-Plugin 'raichoo/haskell-vim' 
+Plugin 'itchyny/vim-haskell-indent' 
 Plugin 'adinapoli/cumino' 
 Plugin 'bitc/vim-hdevtools' 
 Plugin 'eagletmt/ghcmod-vim' 
@@ -23,6 +23,7 @@ Plugin 'mattn/emmet-vim'
 
 " Javascript
 Plugin 'jelera/vim-javascript-syntax'
+Plugin 'moll/vim-node'
 
 " Ide stuff
 Plugin 'tpope/vim-fugitive'
