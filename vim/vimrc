@@ -11,12 +11,16 @@ Plugin 'VundleVim/Vundle.vim'
 " Clojure
 Plugin 'guns/vim-sexp'
 Plugin 'tpope/vim-sexp-mappings-for-regular-people'
+Plugin 'tpope/vim-fireplace'
+Plugin 'guns/vim-clojure-static'
+Plugin 'tpope/vim-salve'
 
 " Haskell
 Plugin 'itchyny/vim-haskell-indent' 
 Plugin 'adinapoli/cumino' 
 Plugin 'bitc/vim-hdevtools' 
 Plugin 'eagletmt/ghcmod-vim' 
+Plugin 'neovimhaskell/haskell-vim'
 
 " Html
 Plugin 'mattn/emmet-vim'
@@ -40,7 +44,19 @@ Plugin 'godlygeek/tabular'
 Plugin 'scrooloose/syntastic'
 Plugin 'tpope/vim-commentary'
 Plugin 'tpope/vim-repeat'
+Plugin 'flazz/vim-colorschemes'
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'tpope/vim-sleuth'
+ 
+" Purescript
+Plugin 'raichoo/purescript-vim'
+Plugin 'frigoeu/psc-ide-vim'
 
+" Ruby 
+Plugin 'tpope/vim-bundler'
+
+" SQL
+Plugin 'vim-scripts/dbext.vim'
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Add all plugins before this
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -53,9 +69,9 @@ filetype plugin on
 syntax on
 
 " Tab settings
-set expandtab
-set tabstop=4
-set shiftwidth=4
+" set expandtab
+" set tabstop=4
+" set shiftwidth=4
 
 " Smart searching
 set ignorecase
@@ -70,7 +86,10 @@ set number
 set omnifunc=syntaxcomplete#Complete " Omni completion
 set confirm
 set cmdheight=1
-set autochdir
+set splitright
+set splitbelow
+set autowriteall
+set relativenumber
 
 let mapleader=","
 let maplocalleader="\\"
@@ -81,33 +100,51 @@ let g:unite_source_grep_default_opts = '-iRhn'
     \ . " --exclude-dir='.git'"
     \ . " --exclude='.gitignore'"
     \ . " --exclude-dir='node_modules'"
+    \ . " --exclude-dir='node_modules'"
 " let g:unite_source_rec_async_command = ['ag', '--nocolor', '--nogroup', '--hidden', '-g', '""']
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#custom#profile('fuzzyfiles', 'context.ignorecase', 1)
 call unite#custom#profile('fuzzyfiles', 'context.smartcase', 1)
+call unite#custom#profile('files', 'context.ignorecase', 1)
+call unite#custom#profile('files', 'context.smartcase', 1)
 call unite#custom#source('file_rec,file_rec/async', 'ignore_pattern',
-            \ '\.stack-work\|node')
+            \ '\.stack-work'
+            \ . '\|node'
+            \ . '\|jar'
+            \ . '\|bower_components'
+            \ . '\|output'
+            \ . '\|compiled'
+            \ . '\|.gitignore'
+            \ . '\|dist'
+            \ . '\|.DS_Store'
+            \ . '\|coverage'
+            \ . '\|.cabal-sandbox')
+
 nnoremap <silent><leader>f :<C-u>Unite 
             \ -auto-preview 
-            \ -vertical
-            \ -buffer-name=files 
-            \ -profile-name=fuzzyfiles
-            \ -auto-preview 
-            \ -vertical
             \ -buffer-name=files 
             \ -profile-name=fuzzyfiles
             \ -start-insert file_rec/async:!<cr>
+nnoremap <leader><leader> :Unite -start-insert
+            \ -profile-name=files
+            \ buffer 
+            \ file_rec
+            \ file_mru<CR>
 
 " General bindings
 nnoremap <silent><space> :nohlsearch<cr>
+nmap <silent><leader>ve :vsp $MYVIMRC<cr>
+nmap <silent><leader>vs :so $MYVIMRC<cr>
 map <F1> <Esc>
 imap <F1> <Esc>
+nnoremap <C-w>v :vnew<cr>
 
 " Syntastic Settings
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_ruby_checkers = ['rubocop']
 
 " Haskell Syntax settings
 let g:haskell_enable_quantification = 1
@@ -127,10 +164,21 @@ let g:cabal_indent_section = 2
 " Cumino Settings
 let g:cumino_default_terminal = "urxvt"
 
+" ruby settings
+let g:ruby_path='/Users/govind/.rbenv/versions/2.2.3/bin/ruby'
+let g:syntastic_ruby_rubocop_exec = '/Users/govind/.rbenv/versions/2.2.3/bin/rubocop'
+
+" Save on buffer change
+augroup AutoSave
+    autocmd!
+    autocmd BufLeave,FocusLost * silent! w
+augroup end
+
 " Haskell Augroup
 augroup Haskell
     autocmd!
     autocmd bufwritepost *.hs %!stylish-haskell
+    autocmd bufenter *.tpl :set syntax=html
 augroup end
 
 " Javascript Augroup
@@ -152,3 +200,5 @@ augroup end
 " Ghcmod settings
 map <silent> tu :call GHC_BrowseAll()<CR>
 map <silent> tw :call GHC_ShowType(1)<CR>
+
+colorscheme solarized
